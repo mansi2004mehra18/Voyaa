@@ -20,28 +20,19 @@ const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 
-// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+// ================= DATABASE CONNECTION =================
 const dbUrl = process.env.ATLASDB_URL;
 
-main().then(() => {
-  console.log("Connected to DB");
-}).catch((err) => {
-  console.log(err);
-});
-
-mongoose
-  .connect(dbUrl)
-  // .connect(MONGO_URL)
-  .then(() => {
-    console.log(" Connected to DB");
-  })
-  .catch((err) => {
-    console.log(" DB Connection Error:", err);
-  });
-
 async function main() {
-  await moongose.connect(MONGO_URL);
+  try {
+    await mongoose.connect(dbUrl);
+    console.log("🚀 MonogoDB Atlas Connected Successfully!");
+  } catch (err) {
+    console.error("❌ MongoDB Connection Error:", err);
+  }
 }
+
+main();
 
 // ================= EXPRESS CONFIG =================
 
@@ -54,21 +45,23 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "/public")));
 
 // ================= SESSION CONFIG =================
-const store = MongoStore.create({ 
-   mongoUrl: dbUrl,
-   crypto: {
-      secret: "mysupersecretcode"
-   },
-   touchafter: 24 * 60 * 60 
- });
 
- store.on("error", ()=> {
+// ================= SESSION CONFIG =================
+const store = MongoStore.create({
+   mongoUrl: dbUrl,
+   crypto : {
+    secret: process.env.SECRET,
+   },
+   touchAfter: 24 * 3600
+  });
+
+store.on("error", (err) => {
   console.log("ERROR IN MONGO SESSION STORE", err);
- })
+});
 
 const sessionOptions = {
   store,
-  secret: "mysupersecretcode",
+  secret: process.env.SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: {
@@ -77,8 +70,6 @@ const sessionOptions = {
     httpOnly: true,
   },
 };
-
-
 
 app.use(session(sessionOptions));
 app.use(flash());
@@ -95,10 +86,11 @@ passport.deserializeUser(User.deserializeUser());
 // ================= GLOBAL MIDDLEWARE =================
 
 app.use((req, res, next) => {
-  res.locals.success = req.flash("success");
-  res.locals.error = req.flash("error");
-  res.locals.currUser = req.user;
-  next();
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
+    res.locals.currUser = req.user || null;
+    console.log("--- MIDDLEWARE RUNNING. CURRENT USER IS:", res.locals.currUser); 
+    next();
 });
 
 // ================= ROUTES =================
@@ -111,5 +103,10 @@ app.use("/", userRouter);
 
 app.use((err, req, res, next) => {
   let { statusCode = 500, message = "Something went wrong!" } = err;
-  res.status(statusCode).render("error.ejs", { message });
+  return res.status(statusCode).render("error.ejs", { message });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
