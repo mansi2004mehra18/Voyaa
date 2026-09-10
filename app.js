@@ -22,13 +22,19 @@ const userRouter = require("./routes/user.js");
 
 // ================= DATABASE CONNECTION =================
 const dbUrl = process.env.ATLASDB_URL;
+const PORT = process.env.PORT || 3000;
 
 async function main() {
   try {
     await mongoose.connect(dbUrl);
-    console.log("🚀 MonogoDB Atlas Connected Successfully!");
+    console.log("🚀 MongoDB Atlas Connected Successfully!");
+
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
   } catch (err) {
     console.error("❌ MongoDB Connection Error:", err);
+    process.exit(1);
   }
 }
 
@@ -46,17 +52,12 @@ app.use(express.static(path.join(__dirname, "/public")));
 
 // ================= SESSION CONFIG =================
 
-// ================= SESSION CONFIG =================
 const store = MongoStore.create({
-   mongoUrl: dbUrl,
-  //  crypto : {
-  //   secret: process.env.SECRET,
-  //  },
-   touchAfter: 24 * 3600
-  });
+  mongoUrl: dbUrl,
+});
 
 store.on("error", (err) => {
-  console.log("ERROR IN MONGO SESSION STORE", err);
+  console.log("ERROR IN MONGO SESSION STORE:", err);
 });
 
 const sessionOptions = {
@@ -89,7 +90,6 @@ app.use((req, res, next) => {
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
     res.locals.currUser = req.user || null;
-    console.log("--- MIDDLEWARE RUNNING. CURRENT USER IS:", res.locals.currUser); 
     next();
 });
 
@@ -108,7 +108,3 @@ app.use((err, req, res, next) => {
   return res.status(statusCode).render("error.ejs", { message });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
