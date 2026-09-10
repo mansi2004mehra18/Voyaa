@@ -135,95 +135,100 @@ Voyaa/
 ```
 
 ## 🔑 Core Functionality
+
 ### Listings
 
 Each listing contains:
 
-Title
-Description
-Price
-Location
-Country
-Image
-Owner
-Reviews
-GeoJSON coordinates
+- Title
+- Description
+- Price
+- Location
+- Country
+- Image
+- Owner
+- Reviews
+- GeoJSON coordinates
 
 Listings are stored in MongoDB using Mongoose.
 
 ### Authentication
 
-Voyaa uses Passport.js with Passport Local Mongoose for authentication.
-
-Authenticated users can create listings and reviews, while authorization
-middleware ensures that users can only modify or delete resources they own.
+- Voyaa uses Passport.js with Passport Local Mongoose for authentication.
+- Authenticated users can create listings and reviews.
+- Authorization middleware ensures that users can only modify or delete resources they own.
 
 ### Image Upload
 
-Listing images are uploaded using Multer and stored on Cloudinary.
+- Listing images are uploaded using Multer and stored on Cloudinary.
 
 ### Maps
 
-Mapbox Geocoding converts a listing's location into geographic coordinates.
-These coordinates are then used to display the listing location on an
-interactive Mapbox map.
+- Mapbox Geocoding converts a listing's location into geographic coordinates.
+- These coordinates are then used to display the listing location on an interactive Mapbox map.
 
 ### Reviews
 
-Users can leave a rating from 1 to 5 stars along with a comment.
-Reviews are associated with both the listing and the user who created them.
+- Users can leave a rating from 1 to 5 stars along with a comment.
+- Reviews are associated with both the listing and the user who created them.
 
 ## ⚙️ Installation & Setup
-1. Clone the repository
-git clone https://github.com/mansi2004mehra18/Voyaa.git
-cd Voyaa
-2. Install dependencies
-npm install
-3. Create a .env file
+
+### 1. Clone the repository
+
+    git clone https://github.com/mansi2004mehra18/Voyaa.git
+    cd Voyaa
+
+### 2. Install dependencies
+
+    npm install
+
+### 3. Create a `.env` file
 
 Add the following environment variables:
 
-ATLASDB_URL=your_mongodb_atlas_connection_string
-SECRET=your_session_secret
+    ATLASDB_URL=your_mongodb_atlas_connection_string
+    SECRET=your_session_secret
+    MAP_TOKEN=your_mapbox_token
+    CLOUD_NAME=your_cloudinary_cloud_name
+    CLOUD_API_KEY=your_cloudinary_api_key
+    CLOUD_API_SECRET=your_cloudinary_api_secret
 
-MAP_TOKEN=your_mapbox_token
+### 4. Start the application
 
-CLOUD_NAME=your_cloudinary_cloud_name
-CLOUD_API_KEY=your_cloudinary_api_key
-CLOUD_API_SECRET=your_cloudinary_api_secret
-4. Start the application
-node app.js
+    node app.js
 
 The application will run on:
 
-http://localhost:3000
+    http://localhost:3000
 
 ## 🌐 Deployment
 
 The project is deployed using Render.
 
-The production environment uses environment variables for sensitive
-credentials such as the MongoDB connection string, session secret,
-Mapbox token, and Cloudinary credentials.
+The production environment uses environment variables for sensitive credentials such as the MongoDB connection string, session secret, Mapbox token, and Cloudinary credentials.
 
 ## 🔒 Security
-Sensitive credentials are stored using environment variables.
-Authentication is handled using Passport.js.
-Authorization middleware protects listing and review operations.
-Joi validates incoming listing and review data.
-Session data is stored using MongoDB.
+
+- Sensitive credentials are stored using environment variables.
+- Authentication is handled using Passport.js.
+- Authorization middleware protects listing and review operations.
+- Joi validates incoming listing and review data.
+- Session data is stored using MongoDB.
 
 ## 📌 Future Improvements
-Implement functional destination search
-Implement listing category filters
-Add booking functionality
-Add user profile pages
-Add wishlist/favorites
-Add advanced search and filtering
-Add pagination for listings
-Improve UI/UX
-Add better image optimization
-Add automated tests
+
+- Implement functional destination search
+- Implement listing category filters
+- Add booking functionality
+- Add user profile pages
+- Add wishlist/favorites
+- Add advanced search and filtering
+- Add pagination for listings
+- Improve UI/UX
+- Add better image optimization
+- Add automated tests
 
 ## 👩‍💻 Author
-Mansi Mehra
+
+**Mansi Mehra**
